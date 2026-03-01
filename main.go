@@ -8,6 +8,8 @@
         "github.com/gofiber/fiber/v2"
         "github.com/gofiber/fiber/v2/middleware/logger"
         "github.com/gofiber/fiber/v2/middleware/recover"
+
+		"project/utils"
     )
 
     func main() {
@@ -24,7 +26,7 @@
         // ========================
         app := fiber.New(fiber.Config{
             AppName: "Project Name",
-            // ErrorHandler: handlers.ErrorHandler,
+            ErrorHandler: utils.ErrorHandler,
         })
 
 		// ========================
@@ -45,6 +47,7 @@
 			return c.JSON(fiber.Map{
 				"status":  "OK",
 				"message": "Service is running",
+				"timestamp": utils.CurrentTimestamp(),
 			})
 		})
 
