@@ -42,7 +42,7 @@ Based project using golang fiber
 ```sh
     touch .env
 ```
-Add code
+- Add code (.env file)
 ```sh
     PORT=8080
 ```
@@ -66,7 +66,7 @@ Add code
 ```sh
     touch main.go
 ```
-Add Code 
+- Add Code (main.go file)
 ```sh
     package main
 
@@ -149,7 +149,7 @@ Add Code
     mkdir -p utils
     touch utils/date_time.go
 ```
-Add code
+- Add code (date_time.go file)
 ```sh
     package utils
 
@@ -171,7 +171,7 @@ Add code
 ```sh
     touch utils/error_handler.go
 ```
-Add code
+- Add code (error_handler.go file)
 ```sh
     package utils
 
