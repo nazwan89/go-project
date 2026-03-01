@@ -42,18 +42,18 @@ Based project using golang fiber
 ```sh
     touch .env
 ```
-- .env
+Add code
 ```sh
     PORT=8080
 ```
 
-To start the server with the value from `.env` you can run:
+- To start the server with the value from `.env` you can run:
 
 ```sh
     go run main.go
 ```
 
-or manually export before running:
+- or manually export before running:
 
 ```sh
     export PORT=8080
@@ -66,8 +66,7 @@ or manually export before running:
 ```sh
     touch main.go
 ```
-Add Code Files
-- main.go
+Add Code 
 ```sh
     package main
 
@@ -79,6 +78,8 @@ Add Code Files
         "github.com/gofiber/fiber/v2"
         "github.com/gofiber/fiber/v2/middleware/logger"
         "github.com/gofiber/fiber/v2/middleware/recover"
+
+		"project/utils"
     )
 
     func main() {
@@ -95,7 +96,7 @@ Add Code Files
         // ========================
         app := fiber.New(fiber.Config{
             AppName: "Project Name",
-            // ErrorHandler: handlers.ErrorHandler,
+            ErrorHandler: utils.ErrorHandler,
         })
 
 		// ========================
@@ -116,6 +117,7 @@ Add Code Files
 			return c.JSON(fiber.Map{
 				"status":  "OK",
 				"message": "Service is running",
+				"timestamp": utils.CurrentTimestamp(),
 			})
 		})
 
@@ -241,4 +243,75 @@ Add code
 1. Create the folders:
 ```sh
     mkdir -p module/{module1,module2,module3}
+```
+
+### Run the Server
+```sh
+    go run main.go
+```
+
+### Create Dockerfile
+1. Dockerfile
+```sh
+    FROM golang:1.25.3-alpine AS builder
+
+    WORKDIR /app
+    COPY . .
+
+    RUN go mod tidy
+    RUN go build -o project-name .
+
+    FROM alpine:latest
+    WORKDIR /app
+    COPY --from=builder /app/project-name .
+
+    EXPOSE 8080
+    ENTRYPOINT ["./project-name"]
+```
+2. Build and run
+```sh
+    docker build -t 'project-name':latest . <---for linux & windows
+    docker buildx build --platform linux/amd64 -t 'project-name':latest . <----for macos
+    docker run -p 8080:8080 'project-name':latest
+```
+
+### Deploy to Kubernetes
+1. Create a file: k8s-deployment.yaml
+```sh
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+        name: 'project-name'
+        spec:
+        replicas: 1
+        selector:
+            matchLabels:
+            app: 'project-name'
+        template:
+            metadata:
+            labels:
+                app: 'project-name'
+            spec:
+            containers:
+                - name: 'project-name'
+                image: 'project-name':latest
+                ports:
+                    - containerPort: 8080
+        ---
+        apiVersion: v1
+        kind: Service
+        metadata:
+        name: 'project-name'
+        spec:
+        type: ClusterIP
+        selector:
+            app: 'project-name'
+        ports:
+            - port: 80
+            targetPort: 8080
+```
+
+2. Deploy
+```sh
+    kubectl apply -f k8s-deployment.yaml
 ```
