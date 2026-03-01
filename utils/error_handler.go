@@ -44,6 +44,7 @@ func MethodNotAllowedHandler(c *fiber.Ctx) error {
 		"error":   "Method Not Allowed",
 		"message": fmt.Sprintf("%s method is not allowed for this endpoint", c.Method()),
 		"path":    c.Path(),
+		"timestamp": CurrentTimestamp(),
 	})
 }
 
@@ -52,6 +53,7 @@ func InternalServerErrorHandler(c *fiber.Ctx, err error) error {
 	return c.Status(500).JSON(fiber.Map{
 		"error":   "Internal Server Error",
 		"message": err.Error(),
+		"timestamp": CurrentTimestamp(),
 	})
 }
 
@@ -60,5 +62,6 @@ func BadRequestHandler(c *fiber.Ctx, message string) error {
 	return c.Status(400).JSON(fiber.Map{
 		"error":   "Bad Request",
 		"message": message,
+		"timestamp": CurrentTimestamp(),
 	})
 }

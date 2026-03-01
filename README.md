@@ -251,27 +251,42 @@ Based project using golang fiber
 ```
 
 ### Create Dockerfile
-1. Dockerfile
+1. Create docker file
 ```sh
-    FROM golang:1.25.3-alpine AS builder
+    touch Dockerfile
+```
+2. Add code
+```sh
+    FROM golang:1.25.4-alpine AS builder
+
+    RUN apk add --no-cache tzdata && \
+        cp /usr/share/zoneinfo/Asia/Kuala_Lumpur /etc/localtime && \
+        echo "Asia/Kuala_Lumpur" > /etc/timezone
 
     WORKDIR /app
     COPY . .
 
     RUN go mod tidy
-    RUN go build -o project-name .
+    RUN go build -o project .
 
     FROM alpine:latest
     WORKDIR /app
-    COPY --from=builder /app/project-name .
+    COPY --from=builder /app/project .
 
     EXPOSE 8080
-    ENTRYPOINT ["./project-name"]
+    ENTRYPOINT ["./project"]
 ```
-2. Build and run
+3. Build and run
+- build images for linux & windows
 ```sh
-    docker build -t 'project-name':latest . <---for linux & windows
-    docker buildx build --platform linux/amd64 -t 'project-name':latest . <----for macos
+    docker build -t 'project-name':latest .
+```
+- build images for macos
+```sh
+    docker buildx build --platform linux/amd64 -t 'project-name':latest .
+```
+- run images
+```sh
     docker run -p 8080:8080 'project-name':latest
 ```
 
