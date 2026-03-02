@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/healthcheck"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/joho/godotenv"
@@ -34,15 +35,11 @@ func main() {
 	// Middleware
 	// ========================
 	app.Use(recover.New())
-
-	app.Use(logger.New(
-		logger.Config{
-			Format: "[${time}] ${status} - ${method} ${path}\n",
-		},
-	))
+	app.Use(logger.New())
+	app.Use(healthcheck.New())
 
 	// ========================
-	// Health Check
+	// Root Route
 	// ========================
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{

@@ -37,7 +37,7 @@ go get github.com/gofiber/fiber/v2
 ```
 
 ## Create File
-### Create .env file
+### Create `.env` file
  - Create an `.env` file (optional: use for local development). Go will not read this file automatically; you either need to load it in code with a package such as `github.com/joho/godotenv` or export the variable before starting the app.
 
 ```sh
@@ -61,90 +61,94 @@ go run main.go
 
 - (see the `main.go` example which uses `godotenv.Load()`)
 
-### Create main.go file
+### Create `main.go` file
 ```sh
-    touch main.go
+touch main.go
 ```
 - Add Code
 ```sh
 package main
 
 import (
-    "log"
-    "os"
+	"log"
+	"os"
 
-    "github.com/joho/godotenv"
-    "github.com/gofiber/fiber/v2"
-    "github.com/gofiber/fiber/v2/middleware/logger"
-    "github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/joho/godotenv"
 
-    "project/utils"
+	"project/module/sample"
+	"project/utils"
 )
 
 func main() {
-    // ========================
-    // load environment variables from .env if present
-    // Go does _not_ automatically read the file; you must do this yourself
-    // or export the variables before running.
-    // In production, you should set environment variables through your hosting provider or container orchestration system.
-    // ========================
-    _ = godotenv.Load() // ignore error – file may not exist in production
+	// ========================
+	// load environment variables from .env if present
+	// Go does _not_ automatically read the file; you must do this yourself
+	// or export the variables before running.
+	// In production, you should set environment variables through your hosting provider or container orchestration system.
+	// ========================
+	_ = godotenv.Load() // ignore error – file may not exist in production
 
-    // ========================
-    // Fiber App Configuration
-    // ========================
-    app := fiber.New(fiber.Config{
-        AppName: "Project Name",
-        ErrorHandler: utils.ErrorHandler,
-    })
+	// ========================
+	// Fiber App Configuration
+	// ========================
+	app := fiber.New(fiber.Config{
+		AppName:      "Project Name",
+		ErrorHandler: utils.ErrorHandler,
+	})
 
-    // ========================
-    // Middleware
-    // ========================
-    app.Use(recover.New())
+	// ========================
+	// Middleware
+	// ========================
+	app.Use(recover.New())
+	app.Use(logger.New())
 
-    app.Use(logger.New(
-        logger.Config{
-            Format: "[${time}] ${status} - ${method} ${path}\n",
-        },
-    ))
+	// ========================
+	// Health Check
+	// ========================
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{
+			"status":    "OK",
+			"message":   "Service is running",
+			"timestamp": utils.CurrentTimestamp(),
+		})
+	})
 
-    // ========================
-    // Health Check
-    // ========================
-    app.Get("/", func(c *fiber.Ctx) error {
-        return c.JSON(fiber.Map{
-            "status":  "OK",
-            "message": "Service is running",
-            "timestamp": utils.CurrentTimestamp(),
-        })
-    })
+	// ========================
+	// Register Module Routes
+	// ========================
+	api := app.Group("/api")
+	sample.RegisterRoutes(api)
 
-    // ========================
-    // Port Configuration
-    // ========================
-    port := os.Getenv("PORT")
-    if port == "" {port = "8080"}
+	// ========================
+	// Port Configuration
+	// ========================
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 
-    log.Printf(
-        "Service Starting On Port %s",
-        port,
-    )
+	log.Printf(
+		"Service Starting On Port %s",
+		port,
+	)
 
-    // ========================
-    // Start Server
-    // ========================
-    if err := app.Listen(":" + port); err != nil {
-        log.Fatalf(
-            "Failed To Start Server: %v",
-            err,
-        )
-    }
+	// ========================
+	// Start Server
+	// ========================
+	if err := app.Listen(":" + port); err != nil {
+		log.Fatalf(
+			"Failed To Start Server: %v",
+			err,
+		)
+	}
 }
 ```
 
 ### Create Utils file
-1. Create date_time utils
+1. Create `utils/date_time.go` file
 ```sh
 mkdir -p utils
 touch utils/date_time.go
@@ -167,7 +171,7 @@ func CurrentUTCTime() time.Time {
 }
 ```
 
-2. Create error utils
+2. Create `utils/error_handler.go` file
 ```sh
 touch utils/error_handler.go
 ```
