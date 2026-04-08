@@ -1,9 +1,11 @@
-package config
+package config_test
 
 import (
 	"os"
 	"testing"
 	"time"
+
+	"project/config"
 )
 
 func TestLoadAppConfig_Defaults(t *testing.T) {
@@ -11,7 +13,7 @@ func TestLoadAppConfig_Defaults(t *testing.T) {
 	os.Unsetenv("PORT")
 	os.Unsetenv("TIMEZONE")
 
-	cfg := LoadAppConfig()
+	cfg := config.LoadAppConfig()
 
 	if cfg.AppName != "go-project" {
 		t.Errorf("expected AppName 'go-project', got %q", cfg.AppName)
@@ -37,7 +39,7 @@ func TestLoadAppConfig_FromEnv(t *testing.T) {
 		os.Unsetenv("TIMEZONE")
 	}()
 
-	cfg := LoadAppConfig()
+	cfg := config.LoadAppConfig()
 
 	if cfg.AppName != "MyApp" {
 		t.Errorf("expected AppName 'MyApp', got %q", cfg.AppName)
@@ -57,7 +59,7 @@ func TestLoadAppConfig_InvalidTimezone(t *testing.T) {
 	os.Setenv("TIMEZONE", "Invalid/Zone")
 	defer os.Unsetenv("TIMEZONE")
 
-	cfg := LoadAppConfig()
+	cfg := config.LoadAppConfig()
 
 	if cfg.Location != time.UTC {
 		t.Errorf("expected fallback to time.UTC for invalid timezone, got %v", cfg.Location)
