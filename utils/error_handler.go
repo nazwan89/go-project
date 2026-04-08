@@ -17,8 +17,10 @@ func ErrorHandler(c *fiber.Ctx, err error) error {
 			return NotFoundHandler(c)
 		case fiber.StatusMethodNotAllowed:
 			return MethodNotAllowedHandler(c)
-		case 413:
-			return BadRequestHandler(c, "Request body too large")
+		case fiber.StatusRequestEntityTooLarge:
+			// Fiber routes 413 (body too large) through ErrorHandler.
+			// Requirement FOUND-03 mandates 400 Bad Request for oversized bodies.
+			return BadRequestHandler(c, "Request body exceeds the maximum allowed size of 1MB")
 		default:
 			if e.Code == fiber.StatusInternalServerError {
 				return InternalServerErrorHandler(c, err)
@@ -38,7 +40,7 @@ func ErrorHandler(c *fiber.Ctx, err error) error {
 
 // NotFoundHandler handles 404 errors.
 func NotFoundHandler(c *fiber.Ctx) error {
-	return c.Status(404).JSON(fiber.Map{
+	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 		"error":     "Endpoint not found",
 		"message":   "The requested endpoint does not exist",
 		"path":      c.Path(),
@@ -48,7 +50,7 @@ func NotFoundHandler(c *fiber.Ctx) error {
 
 // MethodNotAllowedHandler handles 405 errors.
 func MethodNotAllowedHandler(c *fiber.Ctx) error {
-	return c.Status(405).JSON(fiber.Map{
+	return c.Status(fiber.StatusMethodNotAllowed).JSON(fiber.Map{
 		"error":     "Method Not Allowed",
 		"message":   fmt.Sprintf("%s method is not allowed for this endpoint", c.Method()),
 		"path":      c.Path(),
@@ -72,7 +74,7 @@ func InternalServerErrorHandler(c *fiber.Ctx, err error) error {
 
 // BadRequestHandler handles 400 errors.
 func BadRequestHandler(c *fiber.Ctx, message string) error {
-	return c.Status(400).JSON(fiber.Map{
+	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 		"error":     "Bad Request",
 		"message":   message,
 		"timestamp": CurrentTimestamp(time.UTC),
