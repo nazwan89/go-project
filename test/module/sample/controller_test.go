@@ -1,4 +1,4 @@
-package sample
+package test
 
 import (
 	"io"
@@ -9,6 +9,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
+	. "project/module/sample"
 	"project/utils"
 )
 
