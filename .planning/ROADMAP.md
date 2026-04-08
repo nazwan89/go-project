@@ -40,9 +40,9 @@
 **Plans:** 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Externalize config (APP_NAME, TIMEZONE, PORT), update date_time.go, implement graceful SIGTERM shutdown in main.go
-- [ ] 01-02-PLAN.md — Install validator, create input validation helpers, fix body parser 400 errors, add request_id to InternalServerErrorHandler
-- [ ] 01-03-PLAN.md — Create .env.example, run full test suite phase gate, human verification checkpoint
+- [x] 01-01-PLAN.md — Externalize config (APP_NAME, TIMEZONE, PORT), update date_time.go, implement graceful SIGTERM shutdown in main.go
+- [x] 01-02-PLAN.md — Install validator, create input validation helpers, fix body parser 400 errors, add request_id to InternalServerErrorHandler
+- [x] 01-03-PLAN.md — Create .env.example, run full test suite phase gate, human verification checkpoint
 
 ---
 

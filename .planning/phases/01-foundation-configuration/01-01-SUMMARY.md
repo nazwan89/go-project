@@ -12,8 +12,8 @@ tech_stack:
   patterns: [env-driven config, graceful SIGTERM shutdown, location-aware timestamps]
 key_files:
   created:
-    - utils/config.go
-    - utils/config_test.go
+    - config/app_config.go
+    - config/app_config_test.go
   modified:
     - utils/date_time.go
     - utils/error_handler.go
@@ -41,15 +41,15 @@ metrics:
 
 | # | Task | Commit | Files |
 |---|------|--------|-------|
-| 1 (RED) | Add failing tests for LoadConfig and CurrentTimestamp(loc) | 12881f7 | utils/config_test.go |
-| 1 (GREEN) | Create AppConfig/LoadConfig, env-driven CurrentTimestamp, update error handlers | 81e1cd1 | utils/config.go, utils/date_time.go, utils/error_handler.go |
+| 1 (RED) | Add failing tests for LoadConfig and CurrentTimestamp(loc) | 12881f7 | config/app_config_test.go |
+| 1 (GREEN) | Create AppConfig/LoadConfig, env-driven CurrentTimestamp, update error handlers | 81e1cd1 | config/app_config.go, utils/date_time.go, utils/error_handler.go |
 | 2 | Config-driven main.go with graceful SIGTERM shutdown | cb32d8e | main.go, .env |
 
 ---
 
 ## What Changed
 
-### utils/config.go (new)
+### config/app_config.go (new)
 - `AppConfig` struct: `AppName`, `Port`, `Timezone`, `Location *time.Location`
 - `LoadConfig()` reads `APP_NAME`, `PORT`, `TIMEZONE` from env with defaults: `"go-project"`, `"8080"`, `"UTC"`
 - Invalid `TIMEZONE` silently falls back to `time.UTC` — startup never panics (T-01-04 mitigated)
@@ -66,7 +66,7 @@ metrics:
 - Added `"time"` import
 
 ### main.go (modified)
-- Calls `utils.LoadConfig()` immediately after `godotenv.Load()`
+- Calls `config.LoadConfig()` immediately after `godotenv.Load()`
 - `fiber.Config.AppName` now uses `cfg.AppName` (removes hardcoded `"Project Name"`)
 - Added `BodyLimit: 1 * 1024 * 1024` (1MB DoS protection, T-01-01 / FOUND-03)
 - Added `ReadTimeout: 30 * time.Second` (bounds keepalive connections, T-01-03 mitigated)
@@ -82,7 +82,7 @@ metrics:
 ## Verification Results
 
 ```
-go test ./utils/ -run TestLoadConfig -count=1 -v
+go test ./config/ -run TestLoadConfig -count=1 -v
 === RUN   TestLoadConfig_Defaults    --- PASS
 === RUN   TestLoadConfig_FromEnv     --- PASS
 === RUN   TestLoadConfig_InvalidTimezone --- PASS
@@ -91,7 +91,7 @@ PASS ok  project/utils  0.491s
 
 go build ./...   # exits 0
 go vet ./...     # exits 0
-grep "Asia/Kuala_Lumpur" utils/date_time.go utils/config.go utils/error_handler.go  # no matches
+grep "Asia/Kuala_Lumpur" utils/date_time.go config/app_config.go utils/error_handler.go  # no matches
 grep '"Project Name"' main.go  # no matches
 grep "ShutdownWithTimeout" main.go  # match found
 ```
@@ -135,8 +135,8 @@ All files exist. All commits verified.
 
 | Item | Status |
 |------|--------|
-| utils/config.go | FOUND |
-| utils/config_test.go | FOUND |
+| config/app_config.go | FOUND |
+| config/app_config_test.go | FOUND |
 | utils/date_time.go | FOUND |
 | utils/error_handler.go | FOUND |
 | main.go | FOUND |

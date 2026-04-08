@@ -10,7 +10,7 @@
 
 Phase 1 establishes the foundational robustness of the Go/Fiber starter template. The codebase already has a working skeleton: Fiber v2.52.12, godotenv, a centralized `utils/error_handler.go`, and a sample module. What is missing is: externalized config beyond PORT (APP_NAME, TIMEZONE are not read from env), graceful shutdown (app.Listen blocks forever with no signal handling), body size limiting (no BodyLimit set in fiber.Config), input validation helpers (path params and query strings are used raw), body parser error handling (the sample controller currently returns a silent 200 on parse failure), and error sanitization (InternalServerErrorHandler leaks `err.Error()` directly to the client).
 
-All seven requirements in this phase are achievable with the existing dependencies plus one addition (`github.com/go-playground/validator/v10`). No framework changes are needed. The changes are localized: `main.go`, `utils/error_handler.go`, a new `utils/validate.go`, a new `utils/config.go`, and `.env`/`.env.example` files.
+All seven requirements in this phase are achievable with the existing dependencies plus one addition (`github.com/go-playground/validator/v10`). No framework changes are needed. The changes are localized: `main.go`, `utils/error_handler.go`, a new `utils/validate.go`, a new `config/app_config.go`, and `.env`/`.env.example` files.
 
 **Primary recommendation:** Add `go-playground/validator/v10` for input validation. All other requirements are solvable with Go stdlib (`os/signal`, `context`) and the Fiber v2 API already present in the project.
 
@@ -126,7 +126,7 @@ go get github.com/go-playground/validator/v10@latest
 .
 ├── main.go                    # Config load, app init, graceful shutdown
 ├── utils/
-│   ├── config.go              # NEW: AppConfig struct + LoadConfig()
+│   ├── (config moved to config/app_config.go)
 │   ├── error_handler.go       # MODIFIED: sanitize InternalServerError, add request_id
 │   ├── validate.go            # NEW: ValidatePathParam(), ValidateQueryParam() helpers
 │   └── date_time.go           # unchanged
@@ -145,8 +145,8 @@ go get github.com/go-playground/validator/v10@latest
 
 **Example:**
 ```go
-// utils/config.go
-package utils
+// config/app_config.go
+package config
 
 import (
     "os"
@@ -475,7 +475,7 @@ import (
 func main() {
     _ = godotenv.Load()
 
-    cfg := utils.LoadConfig()
+    cfg := config.LoadConfig()
 
     app := fiber.New(fiber.Config{
         AppName:      cfg.AppName,
@@ -635,7 +635,7 @@ PORT=8080
 
 ### Wave 0 Gaps
 
-- [ ] `utils/config_test.go` — covers FOUND-01
+- [ ] `config/app_config_test.go` — covers FOUND-01
 - [ ] `utils/validate_test.go` — covers FOUND-04
 - [ ] `module/sample/controller_test.go` — covers FOUND-03, FOUND-05, SEC-03
 - [ ] No test framework config needed (Go stdlib `testing` + `net/http/httptest`)

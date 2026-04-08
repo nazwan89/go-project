@@ -28,7 +28,7 @@ PostgreSQL
 
 ## Critical Components
 
-### 1. Configuration Layer (NEW) — `config/config.go`
+### 1. Configuration Layer (NEW) — `config/app_config.go`
 
 Single `Config` struct, not package-level globals. Explicit dependencies, testable, validated at startup.
 
@@ -135,7 +135,7 @@ go func() {
 ```
 go-project/
 ├── config/
-│   └── config.go          # NEW — Config struct + Load()
+│   └── app_config.go      # NEW — AppConfig struct + LoadConfig()
 ├── di/
 │   └── container.go       # NEW — DI container
 ├── logging/

@@ -30,7 +30,7 @@ None.
 
 | Requirement | Artifact | Status |
 |-------------|----------|--------|
-| FOUND-01 — APP_NAME from env | utils/config.go | ✓ |
+| FOUND-01 — APP_NAME from env | config/app_config.go | ✓ |
 | FOUND-02 — Graceful SIGTERM shutdown | main.go | ✓ |
 | FOUND-03 — Body size limit (1MB → 400) | main.go + error_handler.go | ✓ |
 | FOUND-04 — Path param validation | utils/validate.go | ✓ |
