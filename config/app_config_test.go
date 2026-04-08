@@ -1,4 +1,4 @@
-package utils
+package config
 
 import (
 	"os"
@@ -61,22 +61,5 @@ func TestLoadConfig_InvalidTimezone(t *testing.T) {
 
 	if cfg.Location != time.UTC {
 		t.Errorf("expected fallback to time.UTC for invalid timezone, got %v", cfg.Location)
-	}
-}
-
-func TestCurrentTimestamp_UsesConfig(t *testing.T) {
-	loc, err := time.LoadLocation("Asia/Kuala_Lumpur")
-	if err != nil {
-		t.Skip("Asia/Kuala_Lumpur timezone not available")
-	}
-
-	ts := CurrentTimestamp(loc)
-	if ts == "" {
-		t.Error("expected non-empty timestamp")
-	}
-
-	tsUTC := CurrentTimestamp(time.UTC)
-	if tsUTC == "" {
-		t.Error("expected non-empty UTC timestamp")
 	}
 }

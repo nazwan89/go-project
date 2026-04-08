@@ -13,6 +13,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/joho/godotenv"
 
+	"project/config"
 	"project/module/sample"
 	"project/utils"
 )
@@ -28,7 +29,7 @@ func main() {
 	// Load typed configuration from environment variables.
 	// All config reads happen here — never call os.Getenv in handlers.
 	// ========================
-	cfg := utils.LoadConfig()
+	cfg := config.LoadConfig()
 
 	// ========================
 	// Fiber App Configuration
