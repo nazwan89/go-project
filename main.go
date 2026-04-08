@@ -29,7 +29,7 @@ func main() {
 	// Load typed configuration from environment variables.
 	// All config reads happen here — never call os.Getenv in handlers.
 	// ========================
-	cfg := config.LoadConfig()
+	cfg := config.LoadAppConfig()
 
 	// ========================
 	// Fiber App Configuration
@@ -37,7 +37,7 @@ func main() {
 	app := fiber.New(fiber.Config{
 		AppName:      cfg.AppName,
 		ErrorHandler: utils.ErrorHandler,
-		BodyLimit:    1 * 1024 * 1024, // 1MB — prevents memory exhaustion DoS (FOUND-03)
+		BodyLimit:    1 * 1024 * 1024,  // 1MB — prevents memory exhaustion DoS (FOUND-03)
 		ReadTimeout:  30 * time.Second, // bounds keepalive connections during graceful shutdown (FOUND-02)
 	})
 
