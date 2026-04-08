@@ -28,7 +28,7 @@ A production-ready Go/Fiber starter template that teams can clone as the baselin
 - Fiber v2.52.12 - HTTP web framework for building REST APIs and handling HTTP requests/responses
 - Location: Used throughout `main.go` and all route handlers in `module/sample/`
 - Fiber's built-in middleware suite:
-- Configuration in `main.go` lines 37-39
+- Configuration in `main.go` lines 47-49
 - Air v1.x - Live code reloading during development
 - Config: `.air.toml`
 - Purpose: Automatic rebuild and restart on file changes
@@ -40,12 +40,12 @@ A production-ready Go/Fiber starter template that teams can clone as the baselin
 - `github.com/valyala/bytebufferpool` v1.0.0 - Memory pooling for byte buffers (Fiber dependency)
 - `github.com/klauspost/compress` v1.17.9 - HTTP compression support (Brotli and others)
 - `github.com/andybalholm/brotli` v1.1.0 - Brotli compression algorithm
-- `golang.org/x/sys` v0.28.0 - System-level Go libraries
+- `golang.org/x/sys` v0.42.0 - System-level Go libraries
 - Standard library packages:
 ## Configuration
 - `.env` file (optional) - Local development configuration
 - Environment variable `PORT` - Server port configuration (default: 8080)
-- Location: `main.go` lines 61-64
+- Location: `config/app_config.go` via `config.LoadAppConfig()`, called at `main.go` line 32
 - In production: Set environment variables through hosting provider or container orchestration
 - `Dockerfile` - Multi-stage build for Alpine Linux container
 - `.air.toml` - Hot reload configuration for development
