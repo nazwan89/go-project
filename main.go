@@ -3,9 +3,6 @@ package main
 import (
 	"log"
 	"os"
-	"os/signal"
-	"syscall"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/healthcheck"
@@ -19,25 +16,19 @@ import (
 
 func main() {
 	// ========================
-	// Load environment variables from .env if present.
-	// In production, set variables through the hosting provider or container orchestration.
+	// load environment variables from .env if present
+	// Go does _not_ automatically read the file; you must do this yourself
+	// or export the variables before running.
+	// In production, you should set environment variables through your hosting provider or container orchestration system.
 	// ========================
-	_ = godotenv.Load()
-
-	// ========================
-	// Load typed configuration from environment variables.
-	// All config reads happen here — never call os.Getenv in handlers.
-	// ========================
-	cfg := utils.LoadConfig()
+	_ = godotenv.Load() // ignore error – file may not exist in production
 
 	// ========================
 	// Fiber App Configuration
 	// ========================
 	app := fiber.New(fiber.Config{
-		AppName:      cfg.AppName,
+		AppName:      "Project Name",
 		ErrorHandler: utils.ErrorHandler,
-		BodyLimit:    1 * 1024 * 1024, // 1MB — prevents memory exhaustion DoS (FOUND-03)
-		ReadTimeout:  30 * time.Second, // bounds keepalive connections during graceful shutdown (FOUND-02)
 	})
 
 	// ========================
@@ -54,7 +45,7 @@ func main() {
 		return c.JSON(fiber.Map{
 			"status":    "OK",
 			"message":   "Service is running",
-			"timestamp": utils.CurrentTimestamp(cfg.Location),
+			"timestamp": utils.CurrentTimestamp(nil),
 		})
 	})
 
@@ -65,26 +56,25 @@ func main() {
 	sample.RegisterRoutes(api)
 
 	// ========================
-	// Start Server (non-blocking) — FOUND-02
+	// Port Configuration
 	// ========================
-	go func() {
-		log.Printf("Service Starting On Port %s", cfg.Port)
-		if err := app.Listen(":" + cfg.Port); err != nil {
-			log.Printf("Server stopped: %v", err)
-		}
-	}()
-
-	// ========================
-	// Graceful Shutdown — FOUND-02
-	// Block until SIGTERM or SIGINT received.
-	// ========================
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
-	<-quit
-
-	log.Println("Shutting down server (30s timeout)...")
-	if err := app.ShutdownWithTimeout(30 * time.Second); err != nil {
-		log.Fatalf("Server forced shutdown: %v", err)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
 	}
-	log.Println("Server exited cleanly")
+
+	log.Printf(
+		"Service Starting On Port %s",
+		port,
+	)
+
+	// ========================
+	// Start Server
+	// ========================
+	if err := app.Listen(":" + port); err != nil {
+		log.Fatalf(
+			"Failed To Start Server: %v",
+			err,
+		)
+	}
 }
