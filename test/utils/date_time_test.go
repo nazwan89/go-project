@@ -1,8 +1,10 @@
-package utils
+package utils_test
 
 import (
 	"testing"
 	"time"
+
+	. "project/utils"
 )
 
 func TestCurrentTimestamp_UsesConfig(t *testing.T) {

@@ -1,8 +1,10 @@
-package utils
+package utils_test
 
 import (
 	"strings"
 	"testing"
+
+	. "project/utils"
 )
 
 func TestValidatePathParam_Valid(t *testing.T) {
