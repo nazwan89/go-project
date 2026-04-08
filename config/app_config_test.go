@@ -6,12 +6,12 @@ import (
 	"time"
 )
 
-func TestLoadConfig_Defaults(t *testing.T) {
+func TestLoadAppConfig_Defaults(t *testing.T) {
 	os.Unsetenv("APP_NAME")
 	os.Unsetenv("PORT")
 	os.Unsetenv("TIMEZONE")
 
-	cfg := LoadConfig()
+	cfg := LoadAppConfig()
 
 	if cfg.AppName != "go-project" {
 		t.Errorf("expected AppName 'go-project', got %q", cfg.AppName)
@@ -27,7 +27,7 @@ func TestLoadConfig_Defaults(t *testing.T) {
 	}
 }
 
-func TestLoadConfig_FromEnv(t *testing.T) {
+func TestLoadAppConfig_FromEnv(t *testing.T) {
 	os.Setenv("APP_NAME", "MyApp")
 	os.Setenv("PORT", "9090")
 	os.Setenv("TIMEZONE", "Asia/Kuala_Lumpur")
@@ -37,7 +37,7 @@ func TestLoadConfig_FromEnv(t *testing.T) {
 		os.Unsetenv("TIMEZONE")
 	}()
 
-	cfg := LoadConfig()
+	cfg := LoadAppConfig()
 
 	if cfg.AppName != "MyApp" {
 		t.Errorf("expected AppName 'MyApp', got %q", cfg.AppName)
@@ -53,11 +53,11 @@ func TestLoadConfig_FromEnv(t *testing.T) {
 	}
 }
 
-func TestLoadConfig_InvalidTimezone(t *testing.T) {
+func TestLoadAppConfig_InvalidTimezone(t *testing.T) {
 	os.Setenv("TIMEZONE", "Invalid/Zone")
 	defer os.Unsetenv("TIMEZONE")
 
-	cfg := LoadConfig()
+	cfg := LoadAppConfig()
 
 	if cfg.Location != time.UTC {
 		t.Errorf("expected fallback to time.UTC for invalid timezone, got %v", cfg.Location)
