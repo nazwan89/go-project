@@ -5,7 +5,7 @@ subsystem: config
 tags: [config, shutdown, security, env]
 dependency_graph:
   requires: []
-  provides: [AppConfig, LoadConfig, CurrentTimestamp(loc), graceful-shutdown]
+  provides: [AppConfig, LoadAppConfig, CurrentTimestamp(loc), graceful-shutdown]
   affects: [main.go, utils/date_time.go, utils/error_handler.go]
 tech_stack:
   added: []
@@ -33,7 +33,7 @@ metrics:
 
 # Phase 1 Plan 01: Externalize Config and Graceful Shutdown Summary
 
-**One-liner:** Env-driven AppConfig struct with LoadConfig(), location-aware CurrentTimestamp, and SIGTERM graceful shutdown with 30s timeout via goroutine + signal channel pattern.
+**One-liner:** Env-driven AppConfig struct with LoadAppConfig(), location-aware CurrentTimestamp, and SIGTERM graceful shutdown with 30s timeout via goroutine + signal channel pattern.
 
 ---
 
@@ -41,8 +41,8 @@ metrics:
 
 | # | Task | Commit | Files |
 |---|------|--------|-------|
-| 1 (RED) | Add failing tests for LoadConfig and CurrentTimestamp(loc) | 12881f7 | config/app_config_test.go |
-| 1 (GREEN) | Create AppConfig/LoadConfig, env-driven CurrentTimestamp, update error handlers | 81e1cd1 | config/app_config.go, utils/date_time.go, utils/error_handler.go |
+| 1 (RED) | Add failing tests for LoadAppConfig and CurrentTimestamp(loc) | 12881f7 | config/app_config_test.go |
+| 1 (GREEN) | Create AppConfig/LoadAppConfig, env-driven CurrentTimestamp, update error handlers | 81e1cd1 | config/app_config.go, utils/date_time.go, utils/error_handler.go |
 | 2 | Config-driven main.go with graceful SIGTERM shutdown | cb32d8e | main.go, .env |
 
 ---
@@ -51,7 +51,7 @@ metrics:
 
 ### config/app_config.go (new)
 - `AppConfig` struct: `AppName`, `Port`, `Timezone`, `Location *time.Location`
-- `LoadConfig()` reads `APP_NAME`, `PORT`, `TIMEZONE` from env with defaults: `"go-project"`, `"8080"`, `"UTC"`
+- `LoadAppConfig()` reads `APP_NAME`, `PORT`, `TIMEZONE` from env with defaults: `"go-project"`, `"8080"`, `"UTC"`
 - Invalid `TIMEZONE` silently falls back to `time.UTC` — startup never panics (T-01-04 mitigated)
 
 ### utils/date_time.go (modified)
@@ -66,7 +66,7 @@ metrics:
 - Added `"time"` import
 
 ### main.go (modified)
-- Calls `config.LoadConfig()` immediately after `godotenv.Load()`
+- Calls `config.LoadAppConfig()` immediately after `godotenv.Load()`
 - `fiber.Config.AppName` now uses `cfg.AppName` (removes hardcoded `"Project Name"`)
 - Added `BodyLimit: 1 * 1024 * 1024` (1MB DoS protection, T-01-01 / FOUND-03)
 - Added `ReadTimeout: 30 * time.Second` (bounds keepalive connections, T-01-03 mitigated)
@@ -82,10 +82,10 @@ metrics:
 ## Verification Results
 
 ```
-go test ./config/ -run TestLoadConfig -count=1 -v
-=== RUN   TestLoadConfig_Defaults    --- PASS
-=== RUN   TestLoadConfig_FromEnv     --- PASS
-=== RUN   TestLoadConfig_InvalidTimezone --- PASS
+go test ./config/ -run TestLoadAppConfig -count=1 -v
+=== RUN   TestLoadAppConfig_Defaults    --- PASS
+=== RUN   TestLoadAppConfig_FromEnv     --- PASS
+=== RUN   TestLoadAppConfig_InvalidTimezone --- PASS
 === RUN   TestCurrentTimestamp_UsesConfig --- PASS
 PASS ok  project/utils  0.491s
 
@@ -125,7 +125,7 @@ All four T-01-xx threat mitigations are in place:
 - T-01-01: `BodyLimit: 1MB` + 413→400 remapping in ErrorHandler
 - T-01-02: `InternalServerErrorHandler` no longer returns `err.Error()`
 - T-01-03: `ReadTimeout: 30s` bounds keepalive connections during shutdown
-- T-01-04: `LoadConfig()` falls back to `time.UTC` on invalid TIMEZONE
+- T-01-04: `LoadAppConfig()` falls back to `time.UTC` on invalid TIMEZONE
 
 ---
 

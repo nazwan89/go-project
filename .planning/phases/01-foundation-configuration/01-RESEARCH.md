@@ -126,7 +126,7 @@ go get github.com/go-playground/validator/v10@latest
 .
 ├── main.go                    # Config load, app init, graceful shutdown
 ├── utils/
-│   ├── (config moved to config/app_config.go)
+│   ├── (config moved to config/app_config.go)LoadAppConfig
 │   ├── error_handler.go       # MODIFIED: sanitize InternalServerError, add request_id
 │   ├── validate.go            # NEW: ValidatePathParam(), ValidateQueryParam() helpers
 │   └── date_time.go           # unchanged
@@ -160,7 +160,7 @@ type AppConfig struct {
     Location *time.Location
 }
 
-func LoadConfig() AppConfig {
+func LoadAppConfig() AppConfig {
     appName := os.Getenv("APP_NAME")
     if appName == "" {
         appName = "go-project"
@@ -376,7 +376,7 @@ func InternalServerErrorHandler(c *fiber.Ctx, err error) error {
 
 ### Anti-Patterns to Avoid
 
-- **Calling `os.Getenv` in handlers or service functions:** All config reads must happen at startup via `LoadConfig()`.
+- **Calling `os.Getenv` in handlers or service functions:** All config reads must happen at startup via `LoadAppConfig()`.
 - **Returning `c.JSON(...)` directly on body parser error without setting status:** This produces a 200 with an "error" payload — misleading to clients and API consumers.
 - **Passing raw `err.Error()` to clients:** Database errors, JSON decode failures, and internal errors contain implementation details. Always use pre-defined messages.
 - **Not setting `ReadTimeout` when using `ShutdownWithTimeout`:** The Fiber docs explicitly warn that keepalive connections are not closed by shutdown — a `ReadTimeout` is required to bound how long they linger. [VERIFIED: `go doc` output]
@@ -475,7 +475,7 @@ import (
 func main() {
     _ = godotenv.Load()
 
-    cfg := config.LoadConfig()
+    cfg := configLoadAppConfigg()
 
     app := fiber.New(fiber.Config{
         AppName:      cfg.AppName,
@@ -619,7 +619,7 @@ PORT=8080
 
 | Req ID | Behavior | Test Type | Automated Command | File Exists? |
 |--------|----------|-----------|-------------------|-------------|
-| FOUND-01 | Config loads APP_NAME, TIMEZONE, PORT from env | unit | `go test ./utils/ -run TestLoadConfig` | Wave 0 |
+| FOUND-01 | Config loads APP_NAME, TIMEZONE, PORT from env | unit | `go test ./utils/ -run TestLoadAppConfig` | Wave 0 |
 | FOUND-02 | Graceful shutdown drains within 30s | integration | Manual — requires process signal test | Manual only |
 | FOUND-03 | Requests > 1MB return 400 | unit (httptest) | `go test ./... -run TestBodyLimit` | Wave 0 |
 | FOUND-04 | ValidatePathParam rejects invalid input | unit | `go test ./utils/ -run TestValidatePathParam` | Wave 0 |

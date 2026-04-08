@@ -71,7 +71,7 @@ godotenv loads `.env` files → Viper reads env vars, sets defaults, validates.
 **Do NOT use:** `os.Getenv()` directly scattered throughout code.
 
 ```go
-func LoadConfig() (*Config, error) {
+func LoadAppConfig() (*Config, error) {
     _ = godotenv.Load()
     viper.SetDefault("PORT", 8080)
     viper.SetDefault("ENV", "development")
