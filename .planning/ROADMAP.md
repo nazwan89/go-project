@@ -37,7 +37,12 @@
 6. All errors return sanitized responses (no stack traces); only generic message + request_id exposed
 7. `.env.example` file documents all required environment variables with descriptions
 
-**Plans:** TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Externalize config (APP_NAME, TIMEZONE, PORT), update date_time.go, implement graceful SIGTERM shutdown in main.go
+- [ ] 01-02-PLAN.md — Install validator, create input validation helpers, fix body parser 400 errors, add request_id to InternalServerErrorHandler
+- [ ] 01-03-PLAN.md — Create .env.example, run full test suite phase gate, human verification checkpoint
 
 ---
 
@@ -123,7 +128,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Configuration | 0/? | Not started | - |
+| 1. Foundation & Configuration | 0/3 | Planned | - |
 | 2. Observability & Middleware | 0/? | Not started | - |
 | 3. Database Layer | 0/? | Not started | - |
 | 4. Security Hardening | 0/? | Not started | - |
@@ -148,3 +153,4 @@
 ---
 
 *Roadmap created: 2026-04-08*
+*Phase 1 planned: 2026-04-08 — 3 plans, 2 waves*
