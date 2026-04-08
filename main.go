@@ -45,7 +45,7 @@ func main() {
 		return c.JSON(fiber.Map{
 			"status":    "OK",
 			"message":   "Service is running",
-			"timestamp": utils.CurrentTimestamp(),
+			"timestamp": utils.CurrentTimestamp(nil),
 		})
 	})
 
