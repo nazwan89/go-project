@@ -21,7 +21,7 @@
                                                │
                           ┌────────────────────┼────────────────────┐
                           ▼                    ▼                     ▼
-                   controller.go          service.go             form.go
+                   handlers.go            service.go             form.go
                   (HTTP handlers)      (business logic)    (Request/Response)
                           │
                           ▼
@@ -39,7 +39,7 @@ A typical request moves through the system in the following sequence:
 
 1. **Entry** — `main.go` starts Fiber on the configured port and registers three middleware layers: `recover.New()` (panic recovery), `logger.New()` (HTTP access logging), and `healthcheck.New()` (built-in liveness endpoint at `GET /livez` and `GET /readyz`).
 2. **Routing** — The request is matched against routes registered under the `/api` group. `sample.RegisterRoutes(api)` registers all `/api/sample/*` routes during startup.
-3. **Handler** — The matched handler function in `controller.go` extracts path params, query params, or body data from the `fiber.Ctx`. Input is validated with `utils.ValidatePathParam` or `utils.ValidateQueryParam` before any business logic runs.
+3. **Handler** — The matched handler function in `handlers.go` extracts path params, query params, or body data from the `fiber.Ctx`. Input is validated with `utils.ValidatePathParam` or `utils.ValidateQueryParam` before any business logic runs.
 4. **Service** — For routes that require non-trivial logic, the handler calls a function in `service.go` (e.g., `generateGreeting`). Service functions are pure — they take plain values and return plain values with no Fiber dependency.
 5. **Response** — The handler serialises the result to JSON via `c.JSON()`. For typed responses, a `Response` struct from `form.go` is used directly.
 6. **Error path** — Any `error` returned from a handler reaches `utils.ErrorHandler`, which is set as `fiber.Config.ErrorHandler`. It inspects the `*fiber.Error` type and dispatches to the appropriate specific handler (`NotFoundHandler`, `MethodNotAllowedHandler`, `BadRequestHandler`, or `InternalServerErrorHandler`). The 500 path logs the real error with a UUID `request_id` internally and returns only a generic message to the caller.
@@ -71,7 +71,7 @@ go-project/
 ├── module/
 │   └── sample/              # Self-contained feature module; clone this directory to add new domains
 │       ├── routes.go        # RegisterRoutes() — route-to-handler mapping; the only public function
-│       ├── controller.go    # Private HTTP handler functions; call service layer and return JSON
+│       ├── handlers.go      # Private HTTP handler functions; call service layer and return JSON
 │       ├── service.go       # Private business logic functions; no Fiber dependency
 │       └── form.go          # Exported Request and Response struct types with JSON/form tags
 ├── utils/
@@ -87,7 +87,7 @@ go-project/
 └── go.sum                   # Dependency lockfile
 ```
 
-Each module under `module/` follows a fixed four-file layout (`routes.go`, `controller.go`, `service.go`, `form.go`). This convention makes it immediately obvious where to find routing, handling, logic, and types for any feature domain without reading file contents first. The `utils/` and `config/` packages are intentionally flat — they hold only cross-cutting infrastructure concerns and must not contain feature-specific business logic.
+Each module under `module/` follows a fixed four-file layout (`routes.go`, `handlers.go`, `service.go`, `form.go`). This convention makes it immediately obvious where to find routing, handling, logic, and types for any feature domain without reading file contents first. The `utils/` and `config/` packages are intentionally flat — they hold only cross-cutting infrastructure concerns and must not contain feature-specific business logic.
 
 ## Middleware Pipeline
 

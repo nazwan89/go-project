@@ -129,7 +129,7 @@ module/
 └── yourfeature/
     ├── form.go        # Request and Response structs
     ├── service.go     # Business logic (pure functions)
-    ├── controller.go  # HTTP handlers (calls service, returns JSON)
+    ├── handlers.go    # HTTP handlers (calls service, returns JSON)
     └── routes.go      # Route registration (one exported function)
 ```
 
@@ -167,7 +167,7 @@ func generateMessage(name string) string {
 
 Service functions are unexported by convention. They must not import Fiber or any HTTP-layer package. Dependencies are passed in as arguments — no global state.
 
-### Step 4 — Write HTTP handlers (`controller.go`)
+### Step 4 — Write HTTP handlers (`handlers.go`)
 
 ```go
 package yourfeature

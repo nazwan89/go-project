@@ -388,7 +388,7 @@ Each feature module lives under `module/` and follows a consistent four-file lay
 module/
 └── sample/
     ├── routes.go      — Route registration (public via RegisterRoutes)
-    ├── controller.go  — HTTP handlers (private functions)
+    ├── handlers.go    — HTTP handlers (private functions)
     ├── service.go     — Business logic (private functions)
     └── form.go        — Request/Response structs with JSON and form tags
 ```
