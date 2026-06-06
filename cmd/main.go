@@ -60,7 +60,7 @@ func main() {
 	})
 
 	// ========================
-	// Register Module Routes
+	// Register API Routes
 	// ========================
 	api.RegisterRoutes(app)
 
