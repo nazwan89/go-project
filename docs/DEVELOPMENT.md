@@ -42,7 +42,7 @@ air
 Without hot reload:
 
 ```bash
-go run main.go
+go run ./cmd
 ```
 
 The server starts on port `8080` by default. Override with the `PORT` environment variable.
@@ -69,8 +69,8 @@ Expected response:
 
 | Command | Description |
 |---|---|
-| `go run main.go` | Run the server without compiling a binary |
-| `go build -o ./tmp/main .` | Compile to `./tmp/main` (same as Air uses) |
+| `go run ./cmd` | Run the server without compiling a binary |
+| `go build -o ./tmp/main ./cmd` | Compile to `./tmp/main` (same as Air uses) |
 | `go test ./...` | Run all tests |
 | `go test ./module/sample/...` | Run tests for the sample module only |
 | `go test ./test/...` | Run package-level tests in the `test/` directory |
@@ -207,9 +207,9 @@ func RegisterRoutes(api fiber.Router) {
 }
 ```
 
-`RegisterRoutes` is the only exported function in a module. The `api` argument is the `/api` group created in `main.go`.
+`RegisterRoutes` is the only exported function in a module. The `api` argument is the `/api` group created in `cmd/main.go`.
 
-### Step 6 — Register the module in `main.go`
+### Step 6 — Register the module in `cmd/main.go`
 
 Import the new package and call `RegisterRoutes` in the "Register Module Routes" block:
 
@@ -229,7 +229,7 @@ yourfeature.RegisterRoutes(api)   // add this line
 
 ## Error Handling Patterns
 
-All error responses go through `utils.ErrorHandler`, which is registered as Fiber's global error handler in `main.go`. Do not construct raw JSON error responses in handlers.
+All error responses go through `utils.ErrorHandler`, which is registered as Fiber's global error handler in `cmd/main.go`. Do not construct raw JSON error responses in handlers.
 
 ### Return a 400 Bad Request
 

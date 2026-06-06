@@ -52,7 +52,7 @@ The defaults in `.env.example` work for local development without any edits. See
 ### Option A — standard `go run` (no hot reload)
 
 ```bash
-go run main.go
+go run ./cmd
 ```
 
 Expected output:
@@ -155,13 +155,13 @@ No test database, external services, or additional setup is required — all tes
 ## Common Setup Issues
 
 **Wrong Go version**
-If `go run main.go` reports a module directive error, your installed Go version is below `1.25.4`. Upgrade at [https://go.dev/dl/](https://go.dev/dl/).
+If `go run ./cmd` reports a module directive error, your installed Go version is below `1.25.4`. Upgrade at [https://go.dev/dl/](https://go.dev/dl/).
 
 **Port 8080 already in use**
 Set a different port before starting the server:
 
 ```bash
-PORT=9090 go run main.go
+PORT=9090 go run ./cmd
 ```
 
 Or update `PORT=9090` in your `.env` file.

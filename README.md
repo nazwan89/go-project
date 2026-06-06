@@ -50,16 +50,16 @@ PORT=8080
 
 - To start the server with the value from `.env` you can run:
 ```sh
-go run main.go
+go run ./cmd
 ```
 
 - or manually export before running:
 ```sh
 export PORT=8080
-go run main.go
+go run ./cmd
 ```
 
-- (see the `main.go` example which uses `godotenv.Load()`)
+- (see the `cmd/main.go` example which uses `godotenv.Load()`)
 
 ### Create `main.go` file
 ```sh
@@ -251,7 +251,7 @@ mkdir -p module/{module1,module2,module3}
 
 ## Run the Server
 ```sh
-go run main.go
+go run ./cmd
 ```
 
 ## Create Dockerfile
@@ -405,7 +405,7 @@ config/
 └── app_config.go      — Typed configuration loaded from environment variables
 ```
 
-To add a new module, create a new directory under `module/`, add the four standard files, and call `RegisterRoutes` from `main.go`.
+To add a new module, create a new directory under `module/`, add the four standard files, and call `RegisterRoutes` from `cmd/main.go`.
 
 ## Configuration
 

@@ -9,7 +9,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                          main.go                            │
+│                        cmd/main.go                          │
 │  LoadAppConfig → Fiber App → Middleware → Routes → Listen   │
 └────────────┬──────────────────────────────────┬────────────┘
              │                                  │
@@ -37,7 +37,7 @@
 
 A typical request moves through the system in the following sequence:
 
-1. **Entry** — `main.go` starts Fiber on the configured port and registers three middleware layers: `recover.New()` (panic recovery), `logger.New()` (HTTP access logging), and `healthcheck.New()` (built-in liveness endpoint at `GET /livez` and `GET /readyz`).
+1. **Entry** — `cmd/main.go` starts Fiber on the configured port and registers three middleware layers: `recover.New()` (panic recovery), `logger.New()` (HTTP access logging), and `healthcheck.New()` (built-in liveness endpoint at `GET /livez` and `GET /readyz`).
 2. **Routing** — The request is matched against routes registered under the `/api` group. `sample.RegisterRoutes(api)` registers all `/api/sample/*` routes during startup.
 3. **Handler** — The matched handler function in `handlers.go` extracts path params, query params, or body data from the `fiber.Ctx`. Input is validated with `utils.ValidatePathParam` or `utils.ValidateQueryParam` before any business logic runs.
 4. **Service** — For routes that require non-trivial logic, the handler calls a function in `service.go` (e.g., `generateGreeting`). Service functions are pure — they take plain values and return plain values with no Fiber dependency.
@@ -48,7 +48,7 @@ A typical request moves through the system in the following sequence:
 
 | Abstraction | File | Description |
 |---|---|---|
-| `AppConfig` | `config/app_config.go` | Typed configuration struct; loaded once in `main.go` from env vars with safe defaults |
+| `AppConfig` | `config/app_config.go` | Typed configuration struct; loaded once in `cmd/main.go` from env vars with safe defaults |
 | `LoadAppConfig()` | `config/app_config.go` | Single entry point for all environment-driven configuration |
 | `ErrorHandler` | `utils/error_handler.go` | Fiber-compatible top-level error handler; dispatches to specific 4xx/5xx handlers |
 | `NotFoundHandler` | `utils/error_handler.go` | Returns a consistent 404 JSON body with `path` and `timestamp` |
@@ -65,7 +65,8 @@ A typical request moves through the system in the following sequence:
 
 ```
 go-project/
-├── main.go                  # Application entry point: config, Fiber setup, middleware, server lifecycle
+├── cmd/
+│   └── main.go              # Application entry point: config, Fiber setup, middleware, server lifecycle
 ├── config/
 │   └── app_config.go        # Typed AppConfig struct and LoadAppConfig(); all env-var reads live here
 ├── module/

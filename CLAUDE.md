@@ -26,9 +26,9 @@ A production-ready Go/Fiber starter template that teams can clone as the baselin
 - Lockfile: Present (`go.sum`)
 ## Frameworks
 - Fiber v2.52.12 - HTTP web framework for building REST APIs and handling HTTP requests/responses
-- Location: Used throughout `main.go` and all route handlers in `module/sample/`
+- Location: Used throughout `cmd/main.go` and all route handlers in `module/sample/`
 - Fiber's built-in middleware suite:
-- Configuration in `main.go` lines 47-49
+- Configuration in `cmd/main.go` lines 47-49
 - Air v1.x - Live code reloading during development
 - Config: `.air.toml`
 - Purpose: Automatic rebuild and restart on file changes
@@ -45,7 +45,7 @@ A production-ready Go/Fiber starter template that teams can clone as the baselin
 ## Configuration
 - `.env` file (optional) - Local development configuration
 - Environment variable `PORT` - Server port configuration (default: 8080)
-- Location: `config/app_config.go` via `config.LoadAppConfig()`, called at `main.go` line 32
+- Location: `config/app_config.go` via `config.LoadAppConfig()`, called at `cmd/main.go` line 32
 - In production: Set environment variables through hosting provider or container orchestration
 - `Dockerfile` - Multi-stage build for Alpine Linux container
 - `.air.toml` - Hot reload configuration for development
@@ -101,7 +101,7 @@ A production-ready Go/Fiber starter template that teams can clone as the baselin
 - Environment-based configuration
 ## Layers
 - Purpose: Handle HTTP requests and responses via Fiber framework
-- Location: `main.go` (route registration), `module/sample/handlers.go` (request handlers)
+- Location: `cmd/main.go` (route registration), `module/sample/handlers.go` (request handlers)
 - Contains: HTTP route definitions, request handling functions, middleware configuration
 - Depends on: Fiber framework, service layer, utils
 - Used by: Client applications making HTTP requests
@@ -137,11 +137,11 @@ A production-ready Go/Fiber starter template that teams can clone as the baselin
 - Examples: NotFoundHandler, MethodNotAllowedHandler, InternalServerErrorHandler, BadRequestHandler
 - Pattern: Specific handler functions for each HTTP error code, returns consistently formatted error JSON
 ## Entry Points
-- Location: `main.go`
-- Triggers: `go run main.go` or compiled binary execution
+- Location: `cmd/main.go`
+- Triggers: `go run ./cmd` or compiled binary execution
 - Responsibilities: Load environment, configure Fiber app, register middleware, register module routes, start server on configurable port
 - Location: `module/sample/routes.go` - RegisterRoutes() function
-- Triggers: Called from main.go during app initialization
+- Triggers: Called from cmd/main.go during app initialization
 - Responsibilities: Register all routes for sample module under /api/sample namespace
 - Location: `module/sample/handlers.go` - HTTP handler functions
 - Triggers: When HTTP request matches route (e.g., GET /api/sample/hello)
