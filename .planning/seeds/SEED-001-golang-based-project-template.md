@@ -40,7 +40,7 @@ Related code and decisions found in the current codebase:
 
 - `main.go` — Entry point; current app bootstrap and router setup
 - `go.mod` — Module definition; current dependencies (Echo, etc.)
-- `module/sample/controller.go` — Example controller pattern to replicate
+- `module/sample/handlers.go` — Example handler pattern to replicate
 - `module/sample/routes.go` — Route registration pattern to formalize
 - `module/sample/service.go` — Service layer separation pattern
 - `module/sample/form.go` — Request form/validation pattern

@@ -17,7 +17,7 @@
 
 **Presentation Layer (HTTP):**
 - Purpose: Handle HTTP requests and responses via Fiber framework
-- Location: `main.go` (route registration), `module/sample/controller.go` (request handlers)
+- Location: `main.go` (route registration), `module/sample/handlers.go` (request handlers)
 - Contains: HTTP route definitions, request handling functions, middleware configuration
 - Depends on: Fiber framework, service layer, utils
 - Used by: Client applications making HTTP requests
@@ -78,7 +78,7 @@
 **Module Structure:**
 - Purpose: Organize feature-specific code into self-contained packages
 - Examples: `module/sample/` (greeting/sample module)
-- Pattern: Each module contains routes.go, controller.go, service.go, form.go for feature isolation
+- Pattern: Each module contains routes.go, handlers.go, service.go, form.go for feature isolation
 
 **Request/Response Types:**
 - Purpose: Provide strongly-typed data contracts for API endpoints
@@ -103,7 +103,7 @@
 - Responsibilities: Register all routes for sample module under /api/sample namespace
 
 **Request Entry Point:**
-- Location: `module/sample/controller.go` - HTTP handler functions
+- Location: `module/sample/handlers.go` - HTTP handler functions
 - Triggers: When HTTP request matches route (e.g., GET /api/sample/hello)
 - Responsibilities: Extract request data, call service layer, return JSON response
 

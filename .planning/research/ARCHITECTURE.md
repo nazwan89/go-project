@@ -68,7 +68,7 @@ func RegisterRoutes(g fiber.Router, c *di.Container) { ... }
 
 ### 3. Module Evolution — Add `model.go` + `repository.go`
 
-Keep existing: `form.go`, `controller.go`, `service.go`, `routes.go`
+Keep existing: `form.go`, `handlers.go`, `service.go`, `routes.go`
 
 Add per module:
 - `model.go` — GORM model definitions
@@ -153,7 +153,7 @@ go-project/
 │       ├── model.go       # NEW — GORM model
 │       ├── repository.go  # NEW — DB access
 │       ├── service.go     # Enhanced — repo injection
-│       ├── controller.go  # Enhanced — service injection
+│       ├── handlers.go    # Enhanced — service injection
 │       ├── routes.go      # Enhanced — accept container
 │       └── form.go        # Existing
 ├── migrations/            # NEW

@@ -33,7 +33,7 @@
 ## Module Design
 
 Each feature module follows this layout:
-- `controller.go` — HTTP handlers (private functions)
+- `handlers.go` — HTTP handlers (private functions)
 - `service.go` — Business logic (private functions)
 - `routes.go` — Route registration (public via `RegisterRoutes`)
 - `form.go` — Request/Response structs (exported)
