@@ -84,7 +84,7 @@ A production-ready Go/Fiber starter template that teams can clone as the baselin
 - Standard Go `log` package — `log.Printf()` for startup, `log.Fatalf()` for fatal errors
 - Fiber's `logger.New()` middleware for HTTP requests
 ## Module Design
-- `controller.go` — HTTP handlers (private functions)
+- `handlers.go` — HTTP handlers (private functions)
 - `service.go` — Business logic (private functions)
 - `routes.go` — Route registration (public via `RegisterRoutes`)
 - `form.go` — Request/Response structs (exported)
@@ -101,7 +101,7 @@ A production-ready Go/Fiber starter template that teams can clone as the baselin
 - Environment-based configuration
 ## Layers
 - Purpose: Handle HTTP requests and responses via Fiber framework
-- Location: `main.go` (route registration), `module/sample/controller.go` (request handlers)
+- Location: `main.go` (route registration), `module/sample/handlers.go` (request handlers)
 - Contains: HTTP route definitions, request handling functions, middleware configuration
 - Depends on: Fiber framework, service layer, utils
 - Used by: Client applications making HTTP requests
@@ -129,7 +129,7 @@ A production-ready Go/Fiber starter template that teams can clone as the baselin
 ## Key Abstractions
 - Purpose: Organize feature-specific code into self-contained packages
 - Examples: `module/sample/` (greeting/sample module)
-- Pattern: Each module contains routes.go, controller.go, service.go, form.go for feature isolation
+- Pattern: Each module contains routes.go, handlers.go, service.go, form.go for feature isolation
 - Purpose: Provide strongly-typed data contracts for API endpoints
 - Examples: `Request{Name string}`, `Response{Message string}` in `module/sample/form.go`
 - Pattern: JSON struct tags for request body parsing, form tags for HTML form parsing
@@ -143,7 +143,7 @@ A production-ready Go/Fiber starter template that teams can clone as the baselin
 - Location: `module/sample/routes.go` - RegisterRoutes() function
 - Triggers: Called from main.go during app initialization
 - Responsibilities: Register all routes for sample module under /api/sample namespace
-- Location: `module/sample/controller.go` - HTTP handler functions
+- Location: `module/sample/handlers.go` - HTTP handler functions
 - Triggers: When HTTP request matches route (e.g., GET /api/sample/hello)
 - Responsibilities: Extract request data, call service layer, return JSON response
 ## Error Handling
