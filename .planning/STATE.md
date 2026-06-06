@@ -143,6 +143,7 @@ None currently. Roadmap is ready for phase planning.
 |---|-------------|------|--------|-----------|
 | 260606-rqq | Update all documentation references from controller.go to handlers.go after file rename | 2026-06-06 | eb2bc59 | [260606-rqq-update-all-documentation-references-from](.planning/quick/260606-rqq-update-all-documentation-references-from/) |
 | 260606-s7g | Move main.go into /cmd directory and update all references | 2026-06-06 | 86cf0ce | [260606-s7g-move-main-go-into-cmd-directory-and-upda](.planning/quick/260606-s7g-move-main-go-into-cmd-directory-and-upda/) |
+| 260606-sgw | Create cmd/api/api.go and extract API route registration from cmd/main.go | 2026-06-06 | c00503e | [260606-sgw-create-cmd-api-api-go-with-a-registerrou](.planning/quick/260606-sgw-create-cmd-api-api-go-with-a-registerrou/) |
 
 ### Next Steps
 
