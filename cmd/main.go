@@ -13,8 +13,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/joho/godotenv"
 
+	"project/cmd/api"
 	"project/config"
-	"project/module/sample"
 	"project/utils"
 )
 
@@ -62,8 +62,7 @@ func main() {
 	// ========================
 	// Register Module Routes
 	// ========================
-	api := app.Group("/api")
-	sample.RegisterRoutes(api)
+	api.RegisterRoutes(app)
 
 	// ========================
 	// Start Server (non-blocking) — FOUND-02
